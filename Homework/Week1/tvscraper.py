@@ -61,7 +61,6 @@ def extract_tvseries(dom):
             Actor_list.append(actorsraw.text)    
         Actors.append(Actor_list)
 
-
         # the runtime of the episode
         Runtime = container.find('span', class_ = 'runtime').get_text(strip=True)
         Runtimes.append(Runtime)
