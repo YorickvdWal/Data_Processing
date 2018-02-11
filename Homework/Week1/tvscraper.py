@@ -17,7 +17,6 @@ BACKUP_HTML = 'tvseries.html'
 OUTPUT_CSV = 'tvseries.csv'
 
 
-
 def extract_tvseries(dom):
     """
     Extract a list of highest rated TV series from DOM (of IMDB page).
@@ -71,6 +70,7 @@ def extract_tvseries(dom):
     serie_info = {'Title': Titles, 'Rating': Ratings, 'Genre': Genres, 'Actors': Actors, 'Runtime': Runtimes} 
     return serie_info
  
+    
 def save_csv(outfile, tvseries):
     """
     Output a CSV file containing highest rated TV-series.
@@ -104,6 +104,7 @@ def save_csv(outfile, tvseries):
         # write the relevant fields into the csv file
         writer.writerow([Titles[information], Rating[information], Genres[information], Actorsstr, Runtime[information]])
 
+        
 def simple_get(url):
     """
     Attempts to get the content at `url` by making an HTTP GET request.
