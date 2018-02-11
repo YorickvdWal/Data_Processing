@@ -44,31 +44,30 @@ def extract_tvseries(dom):
         # the title of the serie
         Title = container.h3.a.text
         Titles.append(Title)
-        print(Titles)
 
         # the IMDB rating of the serie
         Rating = float(container.strong.text)
         Ratings.append(Rating)
-        print(Ratings)
 
         # the genre of the serie
         Genre = container.find('span', class_ = 'genre').get_text(strip=True)
         Genres.append(Genre)
-        print(Genres)
 
         # the stars of the serie
         Actor = container.find_all('p')[2].find_all('a') 
-        Actor_list = []    
+        Actor_list = []
+        
+        # itterate over all available actors
         for actorsraw in Actor:
             Actor_list.append(actorsraw.text)    
         Actors.append(Actor_list)
-        print(Actors)
+
 
         # the runtime of the episode
         Runtime = container.find('span', class_ = 'runtime').get_text(strip=True)
         Runtimes.append(Runtime)
-        print(Runtimes)
-
+           
+    # return required information
     serie_info = {'Title': Titles, 'Rating': Ratings, 'Genre': Genres, 'Actors': Actors, 'Runtime': Runtimes} 
     return serie_info
  
@@ -83,7 +82,7 @@ def save_csv(outfile, tvseries):
     # create header with appropriate information
     writer.writerow(['Title', 'Rating', 'Genre', 'Actors', 'Runtime'])
 
-    # # return values from dictionary
+    # return values from dictionary
     tvseriesvalues = list(tvseries.values())
     Titles = tvseriesvalues[0]
     Rating = tvseriesvalues[1]
@@ -91,7 +90,7 @@ def save_csv(outfile, tvseries):
     Actors = tvseriesvalues[3]
     Runtime = tvseriesvalues[4]
 
-    # repeat the writing for each series
+    # repeat the writing for each title
     for information in range(len(Titles)):
 
         # Change Actors into a string and enhance
