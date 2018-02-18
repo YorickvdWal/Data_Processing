@@ -107,25 +107,25 @@
 					ctx.stroke();
 
 					// draw the values for the y-axis °C
-	                var celsius = 35;
+	                		var celsius = 35;
 
-	                for (var i = rangeY[1]; i <= 501 ; i = i + (400/7)) {
+					for (var i = rangeY[1]; i <= 501 ; i = i + (400/7)) {
 
-	                    celsius -= 5;
+					    celsius -= 5;
 
-	                    // draw the small projections
-	                    ctx.beginPath();
-	                    ctx.moveTo(57-4,i)
-	                    ctx.lineTo(57+4,i);
-	                    ctx.stroke();
+					    // draw the small projections
+					    ctx.beginPath();
+					    ctx.moveTo(57-4,i)
+					    ctx.lineTo(57+4,i);
+					    ctx.stroke();
 
-	                    // draw the values next to the projections
-	                    ctx.fillStyle = "black"; 
-	                    ctx.font = "normal normal 14px Arial"; 
-	                    ctx.textBaseline = "middle";
-	                    ctx.textAlign = "end"; 
-	                    ctx.fillText(celsius, 50, i); 
-	                }
+					    // draw the values next to the projections
+					    ctx.fillStyle = "black"; 
+					    ctx.font = "normal normal 14px Arial"; 
+					    ctx.textBaseline = "middle";
+					    ctx.textAlign = "end"; 
+					    ctx.fillText(celsius, 50, i); 
+					}
 
 					// draw the y-axis
 					ctx.beginPath();
@@ -139,43 +139,43 @@
 					ctx.lineTo(xScale(realDateMax)+70, yScale(domainY[0]));
 					ctx.stroke();
 
-	                var counter = 0;
+					var counter = 0;
 
-	                var transformedDelta = ((transformedDates[364] - transformedDates[0]) / 12);
+					var transformedDelta = ((transformedDates[364] - transformedDates[0]) / 12);
 
-	                for (var i = transformedDates[0]+70; i <= transformedDates[364] ; i = i + transformedDelta) {   
+					for (var i = transformedDates[0]+70; i <= transformedDates[364] ; i = i + transformedDelta) {   
 
-	                    var months =["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+					    var months =["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-	                    // create the small projections on the x-axis
-	                    ctx.beginPath();
-	                    ctx.moveTo(i,rangeY[0]);
-	                    ctx.lineTo(i,rangeY[0] + 6);
-	                    ctx.stroke();
+					    // create the small projections on the x-axis
+					    ctx.beginPath();
+					    ctx.moveTo(i,rangeY[0]);
+					    ctx.lineTo(i,rangeY[0] + 6);
+					    ctx.stroke();
 
-	                    // give the projections on the x-axis the corresponding month
-	                    ctx.fillStyle = "#444444"; 
-	                    ctx.font = "16px Arial"; 
-	                    ctx.textBaseline = "middle"; 
-	                    ctx.textAlign = "end"; 
-	                    ctx.fillText(months[counter], i + 60, rangeY[0] + 20);
-	                    counter += 1;
-	                }
+					    // give the projections on the x-axis the corresponding month
+					    ctx.fillStyle = "#444444"; 
+					    ctx.font = "16px Arial"; 
+					    ctx.textBaseline = "middle"; 
+					    ctx.textAlign = "end"; 
+					    ctx.fillText(months[counter], i + 60, rangeY[0] + 20);
+					    counter += 1;
+					}
 
-                	// last small projection on the end of the x-axis
-                    ctx.beginPath();
-                    ctx.moveTo(transformedDates[364]+70,rangeY[0]);
-                    ctx.lineTo(transformedDates[364]+70,rangeY[0] + 6);
-                    ctx.stroke();
+					// last small projection on the end of the x-axis
+		     			ctx.beginPath();
+					ctx.moveTo(transformedDates[364]+70,rangeY[0]);
+				    	ctx.lineTo(transformedDates[364]+70,rangeY[0] + 6);
+				    	ctx.stroke();
 
-	                // create a title for the graph
-	                ctx.font = "30px Times New Roman";
-	                ctx.fillText("Maximum temperature in De Bilt (NL), 2015",900,40);
+					// create a title for the graph
+					ctx.font = "30px Times New Roman";
+					ctx.fillText("Maximum temperature in De Bilt (NL), 2015",900,40);
 
-	                // create the celsius symbol
-	            	ctx.font = "bold 26px Times New Roman";
-	            	ctx.fillStyle = "#FF0000";
-	            	ctx.fillText("°C",40,75);
+					// create the celsius symbol
+					ctx.font = "bold 26px Times New Roman";
+					ctx.fillStyle = "#FF0000";
+					ctx.fillText("°C",40,75);
 
 					// draw the x === 0
 					ctx.beginPath();
