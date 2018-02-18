@@ -1,0 +1,195 @@
+<html>
+	<head>
+		<p><b>Assignment:</b> Line graph with Javascript<br><b>Name:</b> Yorick van der Wal<br><b>Studentnumber:</b> 10789014<br><b>Datasource:</b><a href="http://projects.knmi.nl/klimatologie/daggegevens/selectie.cgi">KNMI</a></p>
+	</head>
+	<body>
+		<meta charset = "UTF-8">
+		<canvas id="myCanvas" width="1200" height="550" style="border:1px solid #000000"></canvas>
+    	<script>	
+
+    		// get data via html request
+    		var xhttp = new XMLHttpRequest();
+    		xhttp.onreadystatechange = function() {
+    			if (this.readyState == 4 && this.status == 200) {
+
+    				// response of server when ready
+    				var response = xhttp.responseText;
+
+    				// split the data into two arrays and
+    				//  the first 12 unusable lines
+					rawData = response.split("\n");
+					rawData.splice(0,12);
+
+					rawDate = [];
+					rawTemp = [];
+
+					// first line for dates and second for temperatures
+					for (i = 0; i < rawData.length - 1; i++) {
+						var parts = rawData[i].split(",");
+						var rawwDate = parts[0];
+						var rawwTemp = parts[1];
+
+						// remove whitelines 
+						rawwDate = rawwDate.replace(/\s/g, "");
+						rawwTemp = rawwTemp.replace(/\s/g, "");
+
+						// slice dates into year, months and days
+						var year = rawwDate.slice(0,4);
+						var month = rawwDate.slice(4,6);
+						var day = rawwDate.slice(6,8);
+
+						// use Javascript dates and numbers
+						var d = new Date(year, parseInt(month) - 1, parseInt(day));
+						rawwTemp = Number(rawwTemp);
+
+						rawDate.push(d);
+						rawTemp.push(rawwTemp);
+					}
+
+					function createTransform(domain, range){
+						// domain is a two-element array of the data bounds [domain_min, domain_max]
+						// range is a two-element array of the screen bounds [range_min, range_max]
+						// this gives you two equations to solve:
+						// range_min = alpha * domain_min + beta
+						// range_max = alpha * domain_max + beta
+				 		// a solution would be:
+
+					    var domain_min = domain[0]
+					    var domain_max = domain[1]
+					    var range_min = range[0]
+					    var range_max = range[1]
+
+					    // formulas to calculate the alpha and the beta
+					   	var alpha = (range_max - range_min) / (domain_max - domain_min)
+					    var beta = range_max - alpha * domain_max
+
+				   		 // returns the function for the linear transformation (y= a * x + b)
+				    	return function(x){
+				     		return alpha * x + beta;
+				    	}
+					}
+
+					// use miliseconds of rawDates
+					var realDateMin = rawDate[0].getTime();
+					var realDateMax = rawDate[364].getTime();
+
+					var domainX = [realDateMin,realDateMax];
+					var rangeX = [0,1100];
+
+					var domainY = [-50,300];
+					var rangeY = [500, 100];
+
+					var xScale = createTransform(domainX,rangeX);
+					var yScale = createTransform(domainY,rangeY);
+
+					var transformedDates = []
+					var transformedTemps = []
+
+					// push coordinates into lists 
+					for (i = 0; i < rawDate.length; i++) {
+						var transformedTime = rawDate[i].getTime();
+						transformedDates.push(xScale(transformedTime));
+						transformedTemps.push(yScale(rawTemp[i]));
+					}
+
+					// load the canvas
+					var ctx = document.getElementById("myCanvas").getContext("2d");
+
+					// move to initial position and 
+					// draw the line between datapoints
+					ctx.beginPath();
+					ctx.moveTo((xScale(realDateMin))+70, transformedTemps[0]);
+
+					for (i = 0; i < transformedDates.length; i++) {
+						ctx.lineTo(transformedDates[i]+70,transformedTemps[i]);
+					}
+
+					ctx.stroke();
+
+					// draw the values for the y-axis °C
+	                var celsius = 35;
+
+	                for (var i = rangeY[1]; i <= 501 ; i = i + (400/7)) {
+
+	                    celsius -= 5;
+
+	                    // draw the small projections
+	                    ctx.beginPath();
+	                    ctx.moveTo(57-4,i)
+	                    ctx.lineTo(57+4,i);
+	                    ctx.stroke();
+
+	                    // draw the values next to the projections
+	                    ctx.fillStyle = "black"; 
+	                    ctx.font = "normal normal 14px Arial"; 
+	                    ctx.textBaseline = "middle";
+	                    ctx.textAlign = "end"; 
+	                    ctx.fillText(celsius, 50, i); 
+	                }
+
+					// draw the y-axis
+					ctx.beginPath();
+					ctx.moveTo(xScale(realDateMin)+60, yScale(domainY[0]));
+					ctx.lineTo(xScale(realDateMin)+60, yScale(domainY[1]));
+					ctx.stroke();
+
+					// draw the x-axis
+					ctx.beginPath();
+					ctx.moveTo(xScale(realDateMin)+70, yScale(domainY[0]));
+					ctx.lineTo(xScale(realDateMax)+70, yScale(domainY[0]));
+					ctx.stroke();
+
+	                var counter = 0;
+
+	                var transformedDelta = ((transformedDates[364] - transformedDates[0]) / 12);
+
+	                for (var i = transformedDates[0]+70; i <= transformedDates[364] ; i = i + transformedDelta) {   
+
+	                    var months =["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+	                    // create the small projections on the x-axis
+	                    ctx.beginPath();
+	                    ctx.moveTo(i,rangeY[0]);
+	                    ctx.lineTo(i,rangeY[0] + 6);
+	                    ctx.stroke();
+
+	                    // give the projections on the x-axis the corresponding month
+	                    ctx.fillStyle = "#444444"; 
+	                    ctx.font = "16px Arial"; 
+	                    ctx.textBaseline = "middle"; 
+	                    ctx.textAlign = "end"; 
+	                    ctx.fillText(months[counter], i + 60, rangeY[0] + 20);
+	                    counter += 1;
+	                }
+
+                	// last small projection on the end of the x-axis
+                    ctx.beginPath();
+                    ctx.moveTo(transformedDates[364]+70,rangeY[0]);
+                    ctx.lineTo(transformedDates[364]+70,rangeY[0] + 6);
+                    ctx.stroke();
+
+	                // create a title for the graph
+	                ctx.font = "30px Times New Roman";
+	                ctx.fillText("Maximum temperature in De Bilt (NL), 2015",900,40);
+
+	                // create the celsius symbol
+	            	ctx.font = "bold 26px Times New Roman";
+	            	ctx.fillStyle = "#FF0000";
+	            	ctx.fillText("°C",40,75);
+
+					// draw the x === 0
+					ctx.beginPath();
+					ctx.setLineDash([3, 5]);
+					ctx.moveTo(xScale(realDateMin)+70, yScale(0));
+					ctx.lineTo(xScale(realDateMax)+70, yScale(0));
+					ctx.stroke();
+				};
+			};
+
+			// open data and send it to the server
+			xhttp.open("GET", "KNMI_20151231.txt", true);
+			xhttp.send();
+
+		</script>
+	</body>
+</html>
